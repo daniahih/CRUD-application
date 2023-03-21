@@ -3,11 +3,13 @@ export default function Buttons() {
   const [productid, setProductid] = useState("");
   const [productName, setProductName] = useState("");
   const [productprice, setProductprice] = useState("");
+  const [productData, setProductData] = useState(null);
   const handleClick = () => {
     fetch("http://localhost:8181/products")
       .then((res) => res.json())
       .then((res) => {
         console.log("res", res);
+        setProductData(res);
       });
   };
 
@@ -67,6 +69,14 @@ export default function Buttons() {
 
       <button onClick={handelAdd}> add </button>
       <button onClick={handdleDelete}>Delete</button>
+      {productData &&
+        productData.map((product) => (
+          <div key={product.id}>
+            <p>ID: {product.id}</p>
+            <p>Name: {product.name}</p>
+            <p>Price: {product.price}</p>
+          </div>
+        ))}
     </>
   );
 }

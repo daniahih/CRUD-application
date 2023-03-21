@@ -26,6 +26,7 @@ app.post("/products", (req, res) => {
 });
 
 app.delete("/products", (req, res) => {
+  // const productId = req.params.id;
   const products = JSON.parse(fs.readFileSync("../database/product.json"));
   const deletedUser = products.shift();
   fs.writeFileSync("../database/product.json", JSON.stringify(products));
