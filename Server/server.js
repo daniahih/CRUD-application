@@ -58,13 +58,14 @@ app.put("/products/:id", (req, res) => {
   const FindProduct = products.findIndex((product) => product.id === productId); // findindex the product
   if (FindProduct !== -1) {
     // if theres a product
-    const productToUpdate = products[FindProduct];
+    const productToUpdate = products[FindProduct]; // here i take a varible with the all data to the product
     const updatedProduct = {
-      ...productToUpdate, // spread the original product to retain its properties
-      ...req.body, // update the product with the new values
+      // i want to update it
+      ...productToUpdate, // spread the original product to retain its properties // the prv data taked
+      ...req.body, // update the product with the new values // the new values from the client
     };
-    products[FindProduct] = updatedProduct;
-    fs.writeFileSync("../database/product.json", JSON.stringify(products));
+    products[FindProduct] = updatedProduct; // save the updated product to the product
+    fs.writeFileSync("../database/product.json", JSON.stringify(products)); // write it to the fs
 
     res.status(200).send(products);
   } else {
