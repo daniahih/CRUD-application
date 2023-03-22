@@ -1,8 +1,8 @@
-import Buttons from "./components/Buttons";
+import Products from "./components/Products";
 function App() {
   return (
     <div>
-      <Buttons />
+      <Products />
     </div>
   );
 }

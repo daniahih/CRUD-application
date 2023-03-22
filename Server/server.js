@@ -7,35 +7,40 @@ const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors());
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+// GET method , i just want to see all the product inside the fs , so i need to  read the file
 app.get("/products", (req, res) => {
   const products = JSON.parse(fs.readFileSync("../database/product.json"));
   res.send(products);
+  // i send response to the client side with the products
 });
+// POST method  , i want to get the data from the product client , so i will recive them on the req-body
 app.post("/products", (req, res) => {
-  const { id, name, price } = req.body;
+  const { id, name, price } = req.body; // take the product form the request
   console.log(req.body);
 
-  const products = JSON.parse(fs.readFileSync("../database/product.json"));
-  products.push({ id: id, name: name, price: price });
+  const products = JSON.parse(fs.readFileSync("../database/product.json")); // now here i want to read the data from the fs
+  products.push({ id: id, name: name, price: price }); // push the new values fro  the client to the products datbase i have
 
-  fs.writeFileSync("../database/product.json", JSON.stringify(products));
-  res.send(products);
+  fs.writeFileSync("../database/product.json", JSON.stringify(products)); // and then please write it to the file system
+  res.send(products); // send to the client , the products
 });
-
+// DELETE  in delete i will take the id from the parames
 app.delete("/products/:id", (req, res) => {
   const productId = req.params.id;
+  // read the fs
   const products = JSON.parse(fs.readFileSync("../database/product.json"));
+  // i need to find the product from the fs that have the same id that i choose from the client side
   const deletedProduct = products.find((product) => product.id === productId);
+  // if theres no product
   if (!deletedProduct) {
     res.status(404).send("Product not found");
     return;
   }
+  // here i want to return array witout the product that deleted
   const filteredProducts = products.filter(
     (product) => product.id !== productId
   );
+  // write it to the fs
   fs.writeFileSync(
     "../database/product.json",
     JSON.stringify(filteredProducts)
@@ -45,20 +50,14 @@ app.delete("/products/:id", (req, res) => {
   // fs.writeFileSync("../database/product.json", JSON.stringify(products));
   // res.send(deletedUser);
 });
+
+// UPDATE method
 app.put("/products/:id", (req, res) => {
-  const productId = req.params.id;
-  // const updatedProduct = req.body;
-  // console.log("name name", updatedProduct.name);
-  const products = JSON.parse(fs.readFileSync("../database/product.json"));
-  const FindProduct = products.findIndex((product) => product.id === productId);
+  const productId = req.params.id; // take the id from the params
+  const products = JSON.parse(fs.readFileSync("../database/product.json")); // read the fs
+  const FindProduct = products.findIndex((product) => product.id === productId); // findindex the product
   if (FindProduct !== -1) {
-    // find products
-    // if (!updatedProduct.name) {
-    //   updatedProduct.name = FindProduct.name;
-    //   console.log("daniahh");
-    //   console.log("dania", FindProduct.name);
-    // }
-    // products[FindProduct] = updatedProduct;
+    // if theres a product
     const productToUpdate = products[FindProduct];
     const updatedProduct = {
       ...productToUpdate, // spread the original product to retain its properties
@@ -72,13 +71,6 @@ app.put("/products/:id", (req, res) => {
     res.status(404).send("Product not found");
   }
 });
-
-// app.post("/api/my-endpoint", (req, res) => {
-//   console.log("get record ");
-//   const message = req.body.message;
-//   console.log(message); // "Hello server!"
-//   res.end("Thanks for your message!");
-// });
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
