@@ -39,9 +39,33 @@ export default function Buttons() {
       });
   };
   const handdleDelete = async () => {
-    await fetch("http://localhost:8181/products", {
+    await fetch(`http://localhost:8181/products/${productid}`, {
       method: "DELETE",
     });
+  };
+  const handelUpdate = () => {
+    // const product = { id: productid, name: productName, price: productprice };
+    let product = { id: productid };
+    if (productprice !== "") {
+      product = Object.assign(product, { price: productprice });
+    }
+    if (productName !== "") {
+      product = Object.assign(product, { name: productName });
+    }
+    // } else {
+    //   product = { id: productid, name: productName, price: productprice };
+    // }
+    fetch(`http://localhost:8181/products/${productid}`, {
+      method: "PUT",
+      body: JSON.stringify(product),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("res", res);
+      });
   };
 
   return (
@@ -69,6 +93,7 @@ export default function Buttons() {
 
       <button onClick={handelAdd}> add </button>
       <button onClick={handdleDelete}>Delete</button>
+      <button onClick={handelUpdate}> Update </button>
       {productData &&
         productData.map((product) => (
           <div key={product.id}>

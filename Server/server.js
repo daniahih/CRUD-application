@@ -25,12 +25,52 @@ app.post("/products", (req, res) => {
   res.send(products);
 });
 
-app.delete("/products", (req, res) => {
-  // const productId = req.params.id;
+app.delete("/products/:id", (req, res) => {
+  const productId = req.params.id;
   const products = JSON.parse(fs.readFileSync("../database/product.json"));
-  const deletedUser = products.shift();
-  fs.writeFileSync("../database/product.json", JSON.stringify(products));
-  res.send(deletedUser);
+  const deletedProduct = products.find((product) => product.id === productId);
+  if (!deletedProduct) {
+    res.status(404).send("Product not found");
+    return;
+  }
+  const filteredProducts = products.filter(
+    (product) => product.id !== productId
+  );
+  fs.writeFileSync(
+    "../database/product.json",
+    JSON.stringify(filteredProducts)
+  );
+  res.send(deletedProduct);
+  // const deletedUser = products.pop();
+  // fs.writeFileSync("../database/product.json", JSON.stringify(products));
+  // res.send(deletedUser);
+});
+app.put("/products/:id", (req, res) => {
+  const productId = req.params.id;
+  // const updatedProduct = req.body;
+  // console.log("name name", updatedProduct.name);
+  const products = JSON.parse(fs.readFileSync("../database/product.json"));
+  const FindProduct = products.findIndex((product) => product.id === productId);
+  if (FindProduct !== -1) {
+    // find products
+    // if (!updatedProduct.name) {
+    //   updatedProduct.name = FindProduct.name;
+    //   console.log("daniahh");
+    //   console.log("dania", FindProduct.name);
+    // }
+    // products[FindProduct] = updatedProduct;
+    const productToUpdate = products[FindProduct];
+    const updatedProduct = {
+      ...productToUpdate, // spread the original product to retain its properties
+      ...req.body, // update the product with the new values
+    };
+    products[FindProduct] = updatedProduct;
+    fs.writeFileSync("../database/product.json", JSON.stringify(products));
+
+    res.status(200).send(products);
+  } else {
+    res.status(404).send("Product not found");
+  }
 });
 
 // app.post("/api/my-endpoint", (req, res) => {
