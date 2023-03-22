@@ -4,7 +4,9 @@ const port = 8181;
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // GET method , i just want to see all the product inside the fs , so i need to  read the file
